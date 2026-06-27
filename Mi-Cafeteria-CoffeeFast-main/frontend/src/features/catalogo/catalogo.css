@@ -1,0 +1,199 @@
+:root {
+  --color-primary: #32170d;
+  --color-primary-container: #4b2c20;
+  --color-secondary: #7d562d;
+  --color-background: #faf9f4;
+  --color-surface: #ffffff;
+  --color-text-main: #1b1c19;
+  --color-text-muted: #504440;
+  --shadow-premium: 0 4px 6px -1px rgba(75, 44, 32, 0.1), 0 2px 4px -1px rgba(75, 44, 32, 0.06);
+}
+
+.catalogo-container {
+  background-color: var(--color-background);
+  color: var(--color-text-main);
+  font-family: 'Inter', sans-serif;
+  min-height: 100vh;
+}
+
+/* Header */
+.top-nav {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(8px);
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 24px;
+  height: 80px;
+  border-bottom: 1px solid #e3e3de;
+  z-index: 40;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.brand-logo {
+  font-family: 'Playfair Display', serif;
+  font-size: 28px;
+  color: var(--color-primary);
+  font-weight: 700;
+  font-style: italic;
+}
+
+.nav-links { display: flex; gap: 24px; }
+.nav-links a { text-decoration: none; color: var(--color-text-muted); font-weight: 600; }
+.nav-links a.active { color: var(--color-primary); border-bottom: 2px solid var(--color-secondary); }
+
+/* Hero */
+.hero-section {
+  position: relative;
+  height: 400px;
+  display: flex;
+  align-items: center;
+  padding: 0 40px; /* Reducimos el margen de 64px a 40px */
+  background: linear-gradient(to right, rgba(250,249,244,0.95), rgba(250,249,244,0.5)), 
+              url('https://lh3.googleusercontent.com/aida-public/AB6AXuAuLz4xwbNJq3My7d7Pg9jFqRc8ZJtvUmYMO2Lp-2GXUoG81Fy_avbnwrqRAVXM-9s-u0ZMuaAbZGxnDx3MGUKuWhZfw0omGffdTnUZi4aE9bII42azsacp2rFAKn9EkO1T_73l9AzkrLP-us0c8Aq9YJaPbyLCco77WmAznlZjkpLuh3Y3C-3MnD7A8M589__fMBB6sp552gtJeMFFPTyrVVI_urwR8FNcWsYBJoZMcTA58pHCRUDTaXxHBASE9LYtX0_Tge3AXg') center/cover;
+  width: 100%;
+  box-sizing: border-box;
+}
+.hero-title { font-family: 'Playfair Display', serif; font-size: 48px; color: var(--color-primary); margin-bottom: 16px; }
+
+/* Main Content */
+.main-content { 
+  padding: 40px 24px; /* Bajamos de 64px a 24px para que pegue más a los bordes */
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Filtros */
+.filter-controls { display: flex; gap: 10px; margin-bottom: 30px; overflow-x: auto; padding-bottom: 10px; }
+.btn-filter {
+  background-color: transparent;
+  border: 1px solid #e3e3de;
+  color: var(--color-text-muted);
+  padding: 8px 16px;
+  border-radius: 9999px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+.btn-filter:hover { background-color: #e9e8e3; }
+.btn-filter.active { background-color: var(--color-secondary); color: white; border-color: var(--color-secondary); }
+
+/* Grilla de Productos */
+.products-grid {
+  display: grid;
+  /* Auto-fill hará que entren más tarjetas por fila si la pantalla es gigante */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+  gap: 24px;
+  width: 100%;
+}
+
+.product-card {
+  background-color: var(--color-surface);
+  border: 1px solid #e3e3de;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: var(--shadow-premium);
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s;
+}
+.product-card:hover { transform: translateY(-4px); }
+.product-img { width: 100%; height: 200px; object-fit: cover; }
+.product-info { padding: 20px; display: flex; flex-direction: column; flex-grow: 1; }
+.product-category { font-size: 12px; color: var(--color-secondary); font-weight: bold; text-transform: uppercase; }
+.product-price-row { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 16px;}
+.product-price { font-size: 18px; font-weight: bold; color: var(--color-primary); }
+
+/* Botones Universales */
+.btn-primary {
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 9999px;
+  padding: 10px 20px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.btn-primary:hover { background-color: var(--color-primary-container); }
+.btn-icon { padding: 8px; border-radius: 50%; width: 40px; height: 40px; }
+
+/* Carrito Drawer */
+.cart-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.4); z-index: 45; }
+.cart-drawer {
+  position: fixed; top: 0; right: 0; height: 100%; width: 400px;
+  background-color: var(--color-surface); z-index: 50;
+  display: flex; flex-direction: column;
+  transform: translateX(100%); transition: transform 0.3s ease;
+}
+.cart-drawer.open { transform: translateX(0); }
+.drawer-header { padding: 20px; border-bottom: 1px solid #e3e3de; display: flex; justify-content: space-between; align-items: center;}
+.drawer-body { padding: 20px; flex-grow: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 16px;}
+.drawer-footer { padding: 20px; border-top: 1px solid #e3e3de; }
+
+/* Items del carrito */
+.cart-item { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f0f0f0; padding-bottom: 10px;}
+.cart-item-title { font-weight: 600; color: var(--color-primary); }
+.cart-controls { display: flex; align-items: center; gap: 12px; }
+.btn-small { background: #e3e3de; border: none; border-radius: 4px; width: 24px; height: 24px; cursor: pointer;}
+
+/* Contenedor relativo para posicionar el dropdown */
+.profile-menu-container {
+  position: relative;
+}
+
+.user-name-tag {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--color-primary);
+  margin-left: 4px;
+}
+
+/* Caja Flotante de Opciones */
+.profile-dropdown {
+  position: absolute;
+  top: 120%; /* Aparece justo abajo del botón */
+  right: 0;
+  background-color: var(--color-surface);
+  border: 1px solid #e3e3de;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(50, 23, 13, 0.15);
+  display: flex;
+  flex-direction: column;
+  width: 160px;
+  z-index: 100;
+  overflow: hidden;
+}
+
+.profile-dropdown-btn {
+  background: none;
+  border: none;
+  padding: 12px 16px;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.profile-dropdown-btn:hover {
+  background-color: #f5f4ef;
+  color: var(--color-primary);
+}
+
+/* Opción de cerrar sesión con estilo de alerta */
+.profile-dropdown-btn.logout {
+  border-top: 1px solid #e3e3de;
+  color: var(--color-error);
+}
+
+.profile-dropdown-btn.logout:hover {
+  background-color: #ffdad6;
+}

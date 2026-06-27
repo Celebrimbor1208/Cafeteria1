@@ -1,0 +1,229 @@
+/* src/features/auth/auth.css */
+
+/* Agrega esto al inicio de tu auth.css */
+.auth-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
+  z-index: 60;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+
+.close-modal-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  background: none;
+  border: none;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  z-index: 20;
+  padding: 8px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+}
+
+.close-modal-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+  color: var(--color-primary);
+}
+
+.auth-card {
+  width: 100%;
+  max-width: 900px;
+  background-color: var(--color-surface);
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  display: grid;
+  grid-template-columns: 1fr;
+  overflow: hidden;
+  position: relative;
+  max-height: 90vh;
+}
+
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-background);
+  padding: 24px;
+}
+
+@media (min-width: 768px) {
+  .auth-card {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Panel de Imagen (Solo Desktop) */
+.auth-image-panel {
+  display: none;
+  position: relative;
+  background-color: var(--color-primary-container);
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .auth-image-panel {
+    display: flex;
+  }
+}
+
+.auth-image-bg {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDFz9PEn7PhOSVXFx45KCG9qsgcBrRBj3NIDInoISzrmU5mYrljRQkU1zNxJa1YSJik9oadYZ_NK9DBQ0-s1iIqIsAtPw7RR7qTI-SwY2zbB7FLW8YjLw25d_FOZiucRepNqUwaBulr6N8jaJ6fcmfUcFpSrKK5zx6cHq-Hl4bFOzis0qyJI7zjUwtlL3maDg0b7vL3aYpRXDGezZRoNNrmLJR6YQCcrNyYgm3C1IpSxB5uj07U-19tGVS-PV6UBbrEGoGEauY-XQ");
+  background-size: cover;
+  background-position: center;
+  opacity: 0.8;
+}
+
+.auth-image-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(50, 23, 13, 0.9), transparent);
+}
+
+.auth-image-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  color: white;
+}
+
+.auth-image-title {
+  font-family: "Playfair Display", serif;
+  font-size: 48px;
+  font-style: italic;
+  margin-bottom: 8px;
+}
+
+/* Panel del Formulario */
+.auth-form-panel {
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.auth-mobile-logo {
+  display: block;
+  text-align: center;
+  font-family: "Playfair Display", serif;
+  font-size: 32px;
+  font-style: italic;
+  color: var(--color-primary);
+  margin-bottom: 32px;
+}
+
+@media (min-width: 768px) {
+  .auth-mobile-logo {
+    display: none;
+  }
+}
+
+/* Pestañas (Tabs) */
+.auth-tabs {
+  display: flex;
+  border-bottom: 1px solid #e3e3de;
+  margin-bottom: 32px;
+}
+
+.auth-tab {
+  flex: 1;
+  padding-bottom: 12px;
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--color-text-muted);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-tab:hover {
+  color: var(--color-primary);
+}
+
+.auth-tab.active {
+  color: var(--color-primary);
+  border-bottom-color: var(--color-secondary);
+}
+
+/* Formularios */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  font-size: 14px;
+  margin-bottom: 8px;
+  color: var(--color-text-main);
+}
+
+.form-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.forgot-password {
+  font-size: 14px;
+  color: var(--color-secondary);
+  text-decoration: none;
+}
+
+.forgot-password:hover {
+  color: var(--color-primary);
+}
+
+.custom-input {
+  width: 100%;
+  padding: 12px 16px;
+  background-color: rgba(75, 44, 32, 0.02);
+  border: 1px solid #d5c3bd;
+  border-radius: 8px;
+  font-size: 16px;
+  color: var(--color-text-main);
+  transition: all 0.2s;
+  box-sizing: border-box;
+}
+
+.custom-input:focus {
+  outline: none;
+  border-color: #d4a373;
+  box-shadow: 0 0 0 2px rgba(212, 163, 115, 0.2);
+}
+
+.btn-submit {
+  width: 100%;
+  padding: 14px;
+  background-color: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  transition: background-color 0.2s;
+  margin-top: 10px;
+}
+
+.btn-submit:hover {
+  background-color: var(--color-primary-container);
+}
