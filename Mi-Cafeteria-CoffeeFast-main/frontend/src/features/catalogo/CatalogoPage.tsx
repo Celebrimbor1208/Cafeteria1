@@ -11,9 +11,12 @@ import { catalogoService } from './services/catalogoService';
 import './catalogo.css';
 
 import { useNavigate } from 'react-router-dom';
+import api from "../../api";
 
-
-
+const cargarProductos = async () => {
+    const response = await api.get("/productos");
+    console.log(response.data);
+}
 // Productos de respaldo por si tu Base de Datos/Backend viene vacía
 
 const PRODUCTOS_MOCK: any[] = [    {

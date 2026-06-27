@@ -1,21 +1,11 @@
 import axios from 'axios';
 
-const API = axios.create({
-    baseURL: import.meta.env.VITE_API_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+const api = axios.create({
+  // Esta es la URL de tu backend que Render te proporcionó
+  baseURL: 'https://cafeteria1-20vd.onrender.com', 
+  headers: {
+    'Content-Type': 'application/json',
+  },
 });
 
-// Interceptor: Antes de cada petición, busca el token y lo mete en la cabecera
-API.interceptors.request.use((config) => {
-    const token = localStorage.getItem('token');
-    if (token && config.headers) {
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-}, (error) => {
-    return Promise.reject(error);
-});
-
-export default API;
+export default api;
