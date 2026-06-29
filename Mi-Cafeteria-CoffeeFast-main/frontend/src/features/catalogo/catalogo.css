@@ -196,6 +196,7 @@
 
 .profile-dropdown-btn.logout:hover {
   background-color: #ffdad6;
+
 }
 
 /* --- AJUSTES RESPONSIVE --- */
@@ -235,4 +236,5 @@
   .top-nav {
     padding: 0 16px;
   }
+
 }

@@ -11,7 +11,9 @@ import { catalogoService } from './services/catalogoService';
 import './catalogo.css';
 
 import { useNavigate } from 'react-router-dom';
+
 // @ts-ignore
+
 import api from "../../api";
 
 const cargarProductos = async () => {
