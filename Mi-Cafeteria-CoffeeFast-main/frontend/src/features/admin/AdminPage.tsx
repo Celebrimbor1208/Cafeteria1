@@ -1,31 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { adminService } from './adminService';
-// Usamos "import type" para cumplir estrictamente con verbatimModuleSyntax de TypeScript
 import type { ProductoInput, CategoriaInput } from './adminService';
 import './AdminPage.css';
 
 export const AdminPage: React.FC = () => {
+  // 1. ESTADOS
   const [activeTab, setActiveTab] = useState<'productos' | 'categorias'>('productos');
   const [productos, setProductos] = useState<any[]>([]);
   const [categorias, setCategorias] = useState<any[]>([]);
-
-  // Estado para el formulario de Productos
   const [prodForm, setProdForm] = useState<ProductoInput>({
-    nombre: '', 
-    descripcion: '', 
-    precio: 0, 
-    disponible: true, 
-    categoria: { id: 0 }, 
-    imagenUrl: ''
+    nombre: '', descripcion: '', precio: 0, disponible: true, categoria: { id: 0 }, imagenUrl: ''
   });
+  const [catForm, setCatForm] = useState<CategoriaInput>({ nombre: '', descripcion: '' });
+  const [editandoProdId, setEditandoProdId] = useState<number | null>(null);
+  const [editandoCatId, setEditandoCatId] = useState<number | null>(null);
 
-  // Estado para el formulario de Categorías
-  const [catForm, setCatForm] = useState<CategoriaInput>({
-    nombre: '',
-    descripcion: ''
-  });
+  const role = localStorage.getItem('user_role');
 
-  // Cargar datos del backend al iniciar o actualizar
+  // 2. FUNCIONES
   const cargarDatos = async () => {
     try {
       const resProd = await adminService.listarProductos();
@@ -33,203 +25,262 @@ export const AdminPage: React.FC = () => {
       setProductos(resProd.data);
       setCategorias(resCat.data);
     } catch (error) {
-      console.error("Error cargando datos en el panel de administración:", error);
+      console.error("Error cargando datos:", error);
     }
   };
 
+  const limpiarFormProducto = () => {
+    setProdForm({ nombre: '', descripcion: '', precio: 0, disponible: true, categoria: { id: 0 }, imagenUrl: '' });
+    setEditandoProdId(null);
+  };
+
+  const limpiarFormCategoria = () => {
+    setCatForm({ nombre: '', descripcion: '' });
+    setEditandoCatId(null);
+  };
+
+  const guardarProducto = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editandoProdId) {
+        await adminService.actualizarProducto(editandoProdId, prodForm);
+      } else {
+        await adminService.crearProducto(prodForm);
+      }
+      limpiarFormProducto();
+      cargarDatos();
+    } catch (error) {
+      console.error("Error guardando producto:", error);
+      alert("No se pudo guardar el producto.");
+    }
+  };
+
+  const guardarCategoria = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      if (editandoCatId) {
+        await adminService.actualizarCategoria(editandoCatId, catForm);
+      } else {
+        await adminService.crearCategoria(catForm);
+      }
+      limpiarFormCategoria();
+      cargarDatos();
+    } catch (error) {
+      console.error("Error guardando categoría:", error);
+      alert("No se pudo guardar la categoría.");
+    }
+  };
+
+  const editarProducto = (prod: any) => {
+    setEditandoProdId(prod.id);
+    setProdForm({
+      nombre: prod.nombre,
+      descripcion: prod.descripcion,
+      precio: prod.precio,
+      disponible: prod.disponible,
+      categoria: { id: prod.categoria?.id || 0 },
+      imagenUrl: prod.imagenUrl || ''
+    });
+  };
+
+  const editarCategoria = (cat: any) => {
+    setEditandoCatId(cat.id);
+    setCatForm({ nombre: cat.nombre, descripcion: cat.descripcion });
+  };
+
+  const eliminarItem = async (id: number, esProducto: boolean) => {
+    if (!window.confirm("¿Seguro que deseas eliminar este elemento?")) return;
+    try {
+      if (esProducto) {
+        await adminService.eliminarProducto(id);
+      } else {
+        await adminService.eliminarCategoria(id);
+      }
+      cargarDatos();
+      alert("Eliminado correctamente");
+    } catch (error) {
+      console.error("Error:", error);
+      alert("No se pudo eliminar. ¿Sesión caducada?");
+    }
+  };
+
+  // 3. EFECTOS
   useEffect(() => {
     cargarDatos();
   }, []);
 
-  // Controladores de envío (Submit)
-  const handleCrearProducto = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (prodForm.categoria.id === 0) {
-      alert("Por favor, selecciona una categoría válida.");
-      return;
-    }
-    try {
-      await adminService.crearProducto(prodForm);
-      alert("¡Producto registrado con éxito!");
-      cargarDatos(); // Recargar tablas automáticamente
-    } catch (error) {
-      alert("Error al registrar el producto");
-    }
-  };
-
-  const handleCrearCategoria = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      await adminService.crearCategoria(catForm);
-      alert("¡Categoría registrada con éxito!");
-      setCatForm({ nombre: '', descripcion: '' }); // Limpiar formulario
-      cargarDatos(); // Recargar tablas automáticamente
-    } catch (error) {
-      alert("Error al registrar la categoría");
-    }
-  };
-
+  // 4. RENDERIZADO
   return (
     <div className="admin-container">
-      <h2>Panel de Administración - Coffee Fast</h2>
-      
-      {/* Pestañas de Navegación */}
+      <h2>Panel de Administración</h2>
+
       <div className="admin-tabs">
-        <button 
-          className={activeTab === 'productos' ? 'active' : ''} 
+        <button
+          className={activeTab === 'productos' ? 'active' : ''}
           onClick={() => setActiveTab('productos')}
         >
-          Gestionar Productos
+          Productos
         </button>
-        <button 
-          className={activeTab === 'categorias' ? 'active' : ''} 
+        <button
+          className={activeTab === 'categorias' ? 'active' : ''}
           onClick={() => setActiveTab('categorias')}
         >
-          Gestionar Categorías
+          Categorías
         </button>
       </div>
 
-      {/* Contenido de la pestaña Productos */}
-      {activeTab === 'productos' ? (
-        <div className="admin-section">
-          <h3>Registrar Nuevo Producto</h3>
-          <form onSubmit={handleCrearProducto} className="admin-form">
-            <input 
-              type="text" 
-              placeholder="Nombre del producto" 
-              onChange={e => setProdForm({...prodForm, nombre: e.target.value})} 
-              required 
+      {activeTab === 'productos' && (
+        <section className="admin-section">
+          <h3>{editandoProdId ? 'Editar producto' : 'Nuevo producto'}</h3>
+          <form className="admin-form" onSubmit={guardarProducto}>
+            <input
+              placeholder="Nombre"
+              value={prodForm.nombre}
+              onChange={(e) => setProdForm({ ...prodForm, nombre: e.target.value })}
+              required
             />
-            <input 
-              type="text" 
-              placeholder="Descripción" 
-              onChange={e => setProdForm({...prodForm, descripcion: e.target.value})} 
+            <input
+              placeholder="Descripción"
+              value={prodForm.descripcion}
+              onChange={(e) => setProdForm({ ...prodForm, descripcion: e.target.value })}
             />
-            <input 
-              type="number" 
-              step="0.01" 
-              placeholder="Precio (S/.)" 
-              onChange={e => setProdForm({...prodForm, precio: parseFloat(e.target.value)})} 
-              required 
+            <input
+              type="number"
+              placeholder="Precio"
+              value={prodForm.precio}
+              onChange={(e) => setProdForm({ ...prodForm, precio: parseFloat(e.target.value) || 0 })}
+              required
             />
-            <input 
-              type="text" 
-              placeholder="URL de la Imagen" 
-              onChange={e => setProdForm({...prodForm, imagenUrl: e.target.value})} 
-            />
-            
-            {/* Selector dinámico de categorías asociadas */}
-            <select 
-              onChange={e => setProdForm({...prodForm, categoria: { id: parseInt(e.target.value) }})} 
+            <select
+              value={prodForm.categoria.id}
+              onChange={(e) => setProdForm({ ...prodForm, categoria: { id: parseInt(e.target.value) } })}
               required
             >
-              <option value="">Selecciona una Categoría</option>
-              {categorias.map(cat => (
+              <option value={0}>Selecciona categoría</option>
+              {categorias.map((cat) => (
                 <option key={cat.id} value={cat.id}>{cat.nombre}</option>
               ))}
             </select>
-            <button type="submit" className="btn-guardar">Guardar Producto</button>
+            <input
+              placeholder="URL de imagen"
+              value={prodForm.imagenUrl}
+              onChange={(e) => setProdForm({ ...prodForm, imagenUrl: e.target.value })}
+            />
+            <label style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <input
+                type="checkbox"
+                checked={prodForm.disponible}
+                onChange={(e) => setProdForm({ ...prodForm, disponible: e.target.checked })}
+              />
+              Disponible
+            </label>
+            <button type="submit" className="btn-guardar">
+              {editandoProdId ? 'Actualizar' : 'Guardar'}
+            </button>
+            {editandoProdId && (
+              <button type="button" onClick={limpiarFormProducto}>Cancelar</button>
+            )}
           </form>
 
-          <h3>Lista de Productos Activos</h3>
           <table className="admin-table">
             <thead>
               <tr>
-                <th>Imagen</th>
                 <th>Nombre</th>
-                <th>Precio</th>
                 <th>Categoría</th>
+                <th>Precio</th>
+                <th>Disponible</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {productos.map(prod => (
-                <tr key={prod.id}>
-                  <td>
-                    <img 
-                      src={prod.imagenUrl || 'https://via.placeholder.com/50'} 
-                      alt={prod.nombre} 
-                      width="50" 
-                      style={{ borderRadius: '4px', objectFit: 'cover' }}
-                    />
-                  </td>
-                  <td>{prod.nombre}</td>
-                  <td>S/. {prod.precio.toFixed(2)}</td>
-                  <td>{prod.categoria?.nombre || 'Sin categoría'}</td>
-                  <td>
-                    <button 
-                      className="btn-eliminar" 
-                      onClick={async () => { 
-                        if(confirm(`¿Estás seguro de eliminar el producto "${prod.nombre}"?`)) { 
-                          await adminService.eliminarProducto(prod.id); 
-                          cargarDatos(); 
-                        }
-                      }}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
+              {productos && productos.length > 0 ? (
+                productos.map((prod) => (
+                  <tr key={prod.id}>
+                    <td>{prod.nombre}</td>
+                    <td>{prod.categoria?.nombre}</td>
+                    <td>S/. {prod.precio?.toFixed(2)}</td>
+                    <td>{prod.disponible ? 'Sí' : 'No'}</td>
+                    <td>
+                      <button onClick={() => editarProducto(prod)}>Editar</button>
+                      {role === 'ADMIN' && (
+                        <button
+                          className="btn-eliminar"
+                          onClick={() => eliminarItem(prod.id, true)}
+                        >
+                          Eliminar
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={5}>No hay productos para mostrar.</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-        </div>
-      ) : (
-        /* Contenido de la pestaña Categorías */
-        <div className="admin-section">
-          <h3>Registrar Nueva Categoría</h3>
-          <form onSubmit={handleCrearCategoria} className="admin-form">
-            <input 
-              type="text" 
-              placeholder="Nombre de la categoría (ej. Postres)" 
+        </section>
+      )}
+
+      {activeTab === 'categorias' && (
+        <section className="admin-section">
+          <h3>{editandoCatId ? 'Editar categoría' : 'Nueva categoría'}</h3>
+          <form className="admin-form" onSubmit={guardarCategoria}>
+            <input
+              placeholder="Nombre"
               value={catForm.nombre}
-              onChange={e => setCatForm({...catForm, nombre: e.target.value})} 
-              required 
-            />
-            <input 
-              type="text" 
-              placeholder="Descripción corta" 
-              value={catForm.descripcion}
-              onChange={e => setCatForm({...catForm, descripcion: e.target.value})} 
+              onChange={(e) => setCatForm({ ...catForm, nombre: e.target.value })}
               required
             />
-            <button type="submit" className="btn-guardar">Guardar Categoría</button>
+            <input
+              placeholder="Descripción"
+              value={catForm.descripcion}
+              onChange={(e) => setCatForm({ ...catForm, descripcion: e.target.value })}
+            />
+            <button type="submit" className="btn-guardar">
+              {editandoCatId ? 'Actualizar' : 'Guardar'}
+            </button>
+            {editandoCatId && (
+              <button type="button" onClick={limpiarFormCategoria}>Cancelar</button>
+            )}
           </form>
 
-          <h3>Lista de Categorías Activas</h3>
           <table className="admin-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Nombre</th>
                 <th>Descripción</th>
                 <th>Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {categorias.map(cat => (
-                <tr key={cat.id}>
-                  <td>{cat.id}</td>
-                  <td>{cat.nombre}</td>
-                  <td>{cat.descripcion}</td>
-                  <td>
-                    <button 
-                      className="btn-eliminar" 
-                      onClick={async () => { 
-                        if(confirm(`¿Estás seguro de eliminar la categoría "${cat.nombre}"?`)) { 
-                          await adminService.eliminarCategoria(cat.id); 
-                          cargarDatos(); 
-                        }
-                      }}
-                    >
-                      Eliminar
-                    </button>
-                  </td>
+              {categorias && categorias.length > 0 ? (
+                categorias.map((cat) => (
+                  <tr key={cat.id}>
+                    <td>{cat.nombre}</td>
+                    <td>{cat.descripcion}</td>
+                    <td>
+                      <button onClick={() => editarCategoria(cat)}>Editar</button>
+                      {role === 'ADMIN' && (
+                        <button
+                          className="btn-eliminar"
+                          onClick={() => eliminarItem(cat.id, false)}
+                        >
+                          Eliminar
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={3}>No hay categorías para mostrar.</td>
                 </tr>
-              ))}
+              )}
             </tbody>
           </table>
-        </div>
+        </section>
       )}
     </div>
   );

@@ -1,4 +1,4 @@
-import API from '../../config/axios';
+import api from '../../config/axios';
 
 export interface ProductoInput {
   nombre: string;
@@ -16,14 +16,14 @@ export interface CategoriaInput {
 
 export const adminService = {
   // PRODUCTOS
-  listarProductos: () => API.get('/api/productos'),
-  crearProducto: (data: ProductoInput) => API.post('/api/productos', data),
-  actualizarProducto: (id: number, data: ProductoInput) => API.put(`/api/productos/${id}`, data),
-  eliminarProducto: (id: number) => API.delete(`/api/productos/${id}`),
+  listarProductos: () => api.get('/api/productos'),
+  crearProducto: (data: ProductoInput) => api.post('/api/productos', data),
+  actualizarProducto: (id: number, data: ProductoInput) => api.put(`/api/productos/${id}`, data),
+  eliminarProducto: (id: number) => api.delete(`/api/productos/${id}`),
 
   // CATEGORÍAS
-  listarCategorias: () => API.get('/api/categorias'),
-  crearCategoria: (data: CategoriaInput) => API.post('/api/categorias', data),
-  actualizarCategoria: (id: number, data: CategoriaInput) => API.put(`/api/categorias/${id}`, data),
-  eliminarCategoria: (id: number) => API.delete(`/api/categorias/${id}`),
+  listarCategorias: () => api.get('/api/categorias'),
+  crearCategoria: (data: CategoriaInput) => api.post('/api/categorias', data),
+  actualizarCategoria: (id: number, data: CategoriaInput) => api.put(`/api/categorias/${id}`, data),
+  eliminarCategoria: (id: number) => api.delete(`/api/categorias/${id}`),
 };

@@ -1,5 +1,16 @@
 /* src/features/auth/auth.css */
 
+/* Definición de variables globales */
+:root {
+  --color-primary: #5c3d2e;
+  --color-primary-container: #8d6e63;
+  --color-secondary: #d4a373;
+  --color-background: #fdfbf7;
+  --color-surface: #ffffff;
+  --color-text-main: #333333;
+  --color-text-muted: #666666;
+}
+
 /* Agrega esto al inicio de tu auth.css */
 .auth-modal-overlay {
   position: fixed;
