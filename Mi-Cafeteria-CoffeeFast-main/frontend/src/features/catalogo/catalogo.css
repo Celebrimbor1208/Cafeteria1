@@ -196,4 +196,45 @@
 
 .profile-dropdown-btn.logout:hover {
   background-color: #ffdad6;
+
+}
+
+/* --- AJUSTES RESPONSIVE --- */
+
+/* 1. Para pantallas pequeñas (celulares) */
+@media (max-width: 600px) {
+  .hero-section {
+    padding: 0 20px;
+    height: 300px; /* Un poco más pequeño para dejar más espacio al contenido */
+  }
+
+  .hero-title {
+    font-size: 32px; /* Reducimos el título para que no se corte */
+  }
+
+  /* Ocultamos los links de navegación en móvil si quieres (opcional) */
+  .hidden-mobile {
+    display: none !important;
+  }
+}
+
+/* 2. Ajuste para que la grilla de productos sea más fluida */
+@media (max-width: 480px) {
+  .products-grid {
+    /* En pantallas muy pequeñas, forzamos 1 sola columna */
+    grid-template-columns: 1fr; 
+  }
+  
+  .cart-drawer {
+    /* El carrito ocupará toda la pantalla en un celular */
+    width: 100%;
+  }
+}
+
+/* 3. Asegurar que el logo y el nav no se encimen */
+@media (max-width: 400px) {
+  .top-nav {
+    padding: 0 16px;
+  }
+
 }

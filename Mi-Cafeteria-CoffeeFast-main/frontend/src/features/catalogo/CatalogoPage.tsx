@@ -5,6 +5,70 @@ import { catalogoService } from './services/catalogoService';
 import './catalogo.css';
 import { useNavigate } from 'react-router-dom';
 
+
+// @ts-ignore
+
+import api from "../../api";
+
+const cargarProductos = async () => {
+    const response = await api.get("/productos");
+    console.log(response.data);
+}
+// Productos de respaldo por si tu Base de Datos/Backend viene vacía
+
+const PRODUCTOS_MOCK: any[] = [    {
+
+        id: 101,
+
+        nombre: 'Espresso Intenso',
+
+        descripcion: 'Un shot de café puro extraído con precisión, destacando notas de chocolate amargo.',
+
+        precio: 7.50,
+
+        imagenUrl: 'https://images.unsplash.com/photo-1510972527409-cca19de31749?q=80&w=500',
+
+        categoria: { id: 1, nombre: 'Bebidas Calientes' }
+
+    },
+
+    {
+
+        id: 102,
+
+        nombre: 'Café Latte Cremoso',
+
+        descripcion: 'Espresso balanceado con leche vaporizada sedosa y una delicada capa de microespuma.',
+
+        precio: 11.90,
+
+        imagenUrl: 'https://images.unsplash.com/photo-1541167760496-1628856ab772?q=80&w=500',
+
+        categoria: { id: 1, nombre: 'Bebidas Calientes' }
+
+    },
+
+    {
+        id: 103,
+        nombre: 'Cappuccino Tradicional',
+        descripcion: 'Partes iguales de espresso, leche y abundante espuma, espolvoreado con cacao.',
+        precio: 12.50,
+        imagenUrl: 'https://images.unsplash.com/photo-1534778101976-62847782c213?q=80&w=500',
+        categoria: { id: 1, nombre: 'Bebidas Calientes' }
+    },
+    {
+        id: 104,
+        nombre: 'Croissant de Mantequilla',
+        descripcion: 'Hojaldre clásico francés, crujiente por fuera y tierno por dentro, horneado hoy.',
+        precio: 6.90,
+        imagenUrl: 'https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=500',
+        categoria: { id: 2, nombre: 'Pastelería' }
+    }
+
+];
+
+
+
 export default function CatalogoPage() {
     const navigate = useNavigate();
     const [productos, setProductos] = useState<Producto[]>([]);
